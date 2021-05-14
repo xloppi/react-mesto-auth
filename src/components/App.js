@@ -26,7 +26,7 @@ function App() {
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [successfulRequest, setSuccessfulRequest] = useState(false);
-  const [messageTooltip, setMessageTooltip] = useState('Что-то пошло не так! Попробуйте еще раз.');
+  const [messageTooltip, setMessageTooltip] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const history = useHistory();
 

@@ -8,6 +8,8 @@ import AddPlacePopup from './AddPlacePopup';
 import ImagePopup from './ImagePopup';
 import api from '../utils/api';
 import Login from './Login';
+import Register from './Register';
+import ProtectedRoute from './ProtectedRoute';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { useEffect, useState } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
@@ -125,17 +127,22 @@ function App() {
           <Header />
           <Switch>
             <ProtectedRoute
-            path="/"
-            loggedIn={loggedIn}
+            exact path="/"
             component={Main}
+            loggedIn={loggedIn}
+            onEditProfile={handleEditProfileClick}
+            onAddPlace={handleAddPlaceClick}
+            onEditAvatar={handleEditAvatarClick}
+            onCardClick={handleCardClick}
+            cards={cards}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
             />
             <Route path="/login">
-                <Login />
+              <Login />
             </Route>
             <Route path="/register">
-              <div className="registerContainer">
-                <Register />
-              </div>
+              <Register />
             </Route>
             <Route>
             {loggedIn ? (

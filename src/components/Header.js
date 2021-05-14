@@ -1,5 +1,5 @@
 import logo from '../images/logo.svg';
-import {Route, Switch} from "react-router-dom";
+import {Route, Switch, Link} from "react-router-dom";
 
 function Header() {
     return (
@@ -8,10 +8,14 @@ function Header() {
         <nav className="header__navigation">
           <Switch>
             <Route path="/register">
-              <p>Войти</p>
+              <Link to='/login'>
+                Войти
+              </Link>
             </Route>
             <Route path="/login">
-              <p>Регистрация</p>
+              <Link to='/register'>
+                Регистрация
+              </Link>
             </Route>
             <Route path="/main">
               <p>email</p>

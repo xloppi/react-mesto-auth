@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-function Login () {
+function Register () {
   return (
     <div className="auth">
       <h2 className="auth__title">Регистрация</h2>
@@ -19,4 +19,4 @@ function Login () {
   )
 }
 
-export default Login;
+export default Register;

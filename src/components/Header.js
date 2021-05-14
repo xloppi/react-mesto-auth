@@ -6,22 +6,24 @@ function Header({ onLogout, userEmail }) {
       <header className="header">
         <img className="header__logo" src={logo} alt="логотип страницы Место" />
         <nav className="header__navigation">
-          <Switch>
-            <Route path="/register">
-              <Link to='/login'>
-                Войти
-              </Link>
-            </Route>
-            <Route path="/login">
-              <Link to='/register'>
-                Регистрация
-              </Link>
-            </Route>
-            <Route path="/">
-              <p>{userEmail}</p>
-              <button onClick={onLogout}>Выйти</button>
-            </Route>
-          </Switch>
+          <div className="header__navigation-container">
+            <Switch>
+              <Route path="/register">
+                <Link className="header__link" to='/login'>
+                  Войти
+                </Link>
+              </Route>
+              <Route path="/login">
+                <Link className="header__link" to='/register'>
+                  Регистрация
+                </Link>
+              </Route>
+              <Route path="/">
+                  <p>{userEmail}</p>
+                  <button className="header__button-logout" onClick={onLogout}>Выйти</button>
+              </Route>
+            </Switch>
+          </div>
         </nav>
       </header>
     );

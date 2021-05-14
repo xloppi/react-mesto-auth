@@ -1,5 +1,6 @@
 import React from 'react';
 import Card from './Card';
+import Footer from './Footer';
 import {CurrentUserContext} from '../contexts/CurrentUserContext';
 
 function Main({onEditProfile, onAddPlace, onEditAvatar, onCardClick, cards, onCardLike, onCardDelete}) {
@@ -7,6 +8,7 @@ function Main({onEditProfile, onAddPlace, onEditAvatar, onCardClick, cards, onCa
   const currentUser = React.useContext(CurrentUserContext);
 
   return (
+    <>
     <main className="content">
       <section className="profile">
         <div className="profile__avatar-container">
@@ -28,6 +30,8 @@ function Main({onEditProfile, onAddPlace, onEditAvatar, onCardClick, cards, onCa
         </ul>
       </section>
     </main>
+    <Footer />
+    </>
   );
 }
 

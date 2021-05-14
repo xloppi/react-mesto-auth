@@ -28,9 +28,9 @@ function Register ({ onRegister }) {
         <input name="password" type="password" className="auth__input" placeholder="Пароль" value={registerData.password} onChange={handleChange}></input>
         <button className="auth__submit-button">Зарегистрироваться</button>
       </form>
-      <div>
-        <p>Уже зарегистрированы?</p>
-        <Link to="/login">
+      <div className="auth__navigation">
+        <p className="auth__navigation-title">Уже зарегистрированы?</p>
+        <Link className="auth__navigation-link" to="/login">
           Войти
         </Link>
       </div>

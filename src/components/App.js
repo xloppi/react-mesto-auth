@@ -1,6 +1,5 @@
 import Header from './Header';
 import Main from './Main';
-import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
@@ -27,7 +26,7 @@ function App() {
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [successfulRequest, setSuccessfulRequest] = useState(false);
-  const [messageTooltip, setMessageTooltip] = useState('');
+  const [messageTooltip, setMessageTooltip] = useState('Что-то пошло не так! Попробуйте еще раз.');
   const [userEmail, setUserEmail] = useState('');
   const history = useHistory();
 
@@ -39,7 +38,7 @@ function App() {
     if(loggedIn) {
       history.push('/');
     }
-  }, [loggedIn])
+  }, [history, loggedIn])
 
   useEffect(() => {
     api.getUserInfo()
@@ -154,12 +153,14 @@ function App() {
     return auth.register(data)
       .then(() => {
         setSuccessfulRequest(true);
+        setMessageTooltip('Вы успешно зарегистрировались!')
         setTooltipOpen(true);
         history.push('/login');
       })
       .catch(() => {
         setSuccessfulRequest(false);
         setTooltipOpen(true);
+        setMessageTooltip('Что-то пошло не так! Попробуйте еще раз.')
       })
   }
 
@@ -168,13 +169,12 @@ function App() {
       .then(({token}) =>{
         localStorage.setItem('token', token);
         setLoggedIn(true);
-        setSuccessfulRequest(true);
-        setTooltipOpen(true);
         setUserEmail(data.email);
       })
       .catch(() => {
         setSuccessfulRequest(false);
         setTooltipOpen(true);
+        setMessageTooltip('Что-то пошло не так! Попробуйте еще раз.')
       })
   }
 
@@ -216,19 +216,6 @@ function App() {
             )}
             </Route>
           </Switch>
-          <Footer />
-
-          {/*<Header />
-          <Main
-            onEditProfile={handleEditProfileClick}
-            onAddPlace={handleAddPlaceClick}
-            onEditAvatar={handleEditAvatarClick}
-            onCardClick={handleCardClick}
-            cards={cards}
-            onCardLike={handleCardLike}
-            onCardDelete={handleCardDelete}
-          />
-          <Footer /> */}
           <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar}/>
           <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser}/>
           <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit}/>
@@ -242,8 +229,8 @@ function App() {
         </div>
       </div>
     </CurrentUserContext.Provider>
-
   );
+
 }
 
 export default App;

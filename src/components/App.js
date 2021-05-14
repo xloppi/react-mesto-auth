@@ -6,18 +6,28 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ImagePopup from './ImagePopup';
+import InfoTooltip from './InfoTooltip';
 import api from '../utils/api';
-import {CurrentUserContext} from '../contexts/CurrentUserContext';
-import {useEffect, useState} from 'react';
+import Login from './Login';
+import Register from './Register';
+import auth from '../utils/auth';
+import ProtectedRoute from './ProtectedRoute';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import { useEffect, useState } from 'react';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
 function App() {
 
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
+  const [isTooltipOpen, setTooltipOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [successfulRequest, setSuccessfulRequest] = useState(false);
+  const [messageTooltip, setMessageTooltip] = useState('');
 
   useEffect(() => {
     api.getUserInfo()
@@ -76,6 +86,7 @@ function App() {
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
     setSelectedCard({});
+    setTooltipOpen(false);
   }
 
   const handleCardClick = (card) => {
@@ -115,11 +126,55 @@ function App() {
     });
   }
 
+  const register = (data) => {
+    return auth.register(data)
+      .then(() => {
+        setSuccessfulRequest(true);
+        setTooltipOpen(true);
+      })
+      .catch(() => {
+        setSuccessfulRequest(false);
+        setTooltipOpen(true);
+      })
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <div className="page__content">
           <Header />
+          <Switch>
+            <ProtectedRoute
+            exact path="/"
+            component={Main}
+            loggedIn={loggedIn}
+            onEditProfile={handleEditProfileClick}
+            onAddPlace={handleAddPlaceClick}
+            onEditAvatar={handleEditAvatarClick}
+            onCardClick={handleCardClick}
+            cards={cards}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
+            />
+            <Route path="/login">
+              <Login />
+            </Route>
+            <Route path="/register">
+              <Register onRegister={(data) =>{
+                console.log(data)
+              }} />
+            </Route>
+            <Route>
+            {loggedIn ? (
+              <Redirect to="/main" />
+            ) : (
+              <Redirect to="/login" />
+            )}
+            </Route>
+          </Switch>
+          <Footer />
+
+          {/*<Header />
           <Main
             onEditProfile={handleEditProfileClick}
             onAddPlace={handleAddPlaceClick}
@@ -129,12 +184,17 @@ function App() {
             onCardLike={handleCardLike}
             onCardDelete={handleCardDelete}
           />
-          <Footer />
+          <Footer /> */}
           <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar}/>
           <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser}/>
           <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit}/>
           <PopupWithForm name="submit-delete" title="Вы уверены?" buttonTitle="Да" />
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+          <InfoTooltip
+            isOpen={isTooltipOpen}
+            onClose={closeAllPopups}
+            success={successfulRequest}
+            message={messageTooltip}/>
         </div>
       </div>
     </CurrentUserContext.Provider>

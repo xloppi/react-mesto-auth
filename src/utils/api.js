@@ -4,7 +4,7 @@ class Api {
   constructor(options) {
     this.url = options.url;
     this.headers = options.headers;
-    this._getPromise = (res) => {
+    this._parseResponse = (res) => {
       if(res.ok) {
         return res.json();
       }
@@ -16,14 +16,14 @@ class Api {
     return fetch(`${this.url}/cards`, {
       headers: this.headers,
     })
-    .then(this._getPromise);
+    .then(this._parseResponse);
   }
 
   getUserInfo() {
     return fetch(`${this.url}/users/me`, {
       headers: this.headers,
     })
-    .then(this._getPromise);
+    .then(this._parseResponse);
   }
 
   editProfileTask(data) {
@@ -35,7 +35,7 @@ class Api {
         about: data.about,
       })
     })
-    .then(this._getPromise);
+    .then(this._parseResponse);
   }
 
   addPlaceTask(data) {
@@ -47,7 +47,7 @@ class Api {
         link: data.link,
       })
     })
-    .then(this._getPromise);
+    .then(this._parseResponse);
   }
 
   editAvatarTask(data) {
@@ -58,7 +58,7 @@ class Api {
         avatar: data.avatar,
       })
     })
-    .then(this._getPromise);
+    .then(this._parseResponse);
   }
 
   deletePlaceTask(id) {
@@ -66,7 +66,7 @@ class Api {
       method: 'DELETE',
       headers: this.headers,
     })
-    .then(this._getPromise);
+    .then(this._parseResponse);
   }
 
   changeLikeCardStatus(id, isLiked) {
@@ -74,7 +74,7 @@ class Api {
         method: isLiked ? 'DELETE' : 'PUT',
         headers: this.headers,
       })
-      .then(this._getPromise);
+      .then(this._parseResponse);
   }
 }
 

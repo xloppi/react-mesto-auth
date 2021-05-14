@@ -7,8 +7,10 @@ import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ImagePopup from './ImagePopup';
 import api from '../utils/api';
-import {CurrentUserContext} from '../contexts/CurrentUserContext';
-import {useEffect, useState} from 'react';
+import Login from './Login';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import { useEffect, useState } from 'react';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
 function App() {
 
@@ -18,6 +20,7 @@ function App() {
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     api.getUserInfo()
@@ -120,6 +123,31 @@ function App() {
       <div className="page">
         <div className="page__content">
           <Header />
+          <Switch>
+            <ProtectedRoute
+            path="/"
+            loggedIn={loggedIn}
+            component={Main}
+            />
+            <Route path="/login">
+                <Login />
+            </Route>
+            <Route path="/register">
+              <div className="registerContainer">
+                <Register />
+              </div>
+            </Route>
+            <Route>
+            {loggedIn ? (
+              <Redirect to="/main" />
+            ) : (
+              <Redirect to="/login" />
+            )}
+            </Route>
+          </Switch>
+          <Footer />
+
+          {/*<Header />
           <Main
             onEditProfile={handleEditProfileClick}
             onAddPlace={handleAddPlaceClick}
@@ -129,7 +157,7 @@ function App() {
             onCardLike={handleCardLike}
             onCardDelete={handleCardDelete}
           />
-          <Footer />
+          <Footer /> */}
           <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar}/>
           <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser}/>
           <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit}/>

@@ -31,7 +31,7 @@ function App() {
   const history = useHistory();
 
   useEffect(() => {
-    tokenCheck();
+    tokenCheck()
   }, [])
 
   useEffect(() => {
@@ -202,17 +202,17 @@ function App() {
             onCardLike={handleCardLike}
             onCardDelete={handleCardDelete}
             />
-            <Route path="/login">
+            <Route path="/sign-in">
               <Login onLogin={handleLogin} />
             </Route>
-            <Route path="/register">
+            <Route path="/sign-up">
               <Register onRegister={handleRegister} />
             </Route>
             <Route>
             {loggedIn ? (
-              <Redirect to="/main" />
+              <Redirect to="/" />
             ) : (
-              <Redirect to="/login" />
+              <Redirect to="/sign-in" />
             )}
             </Route>
           </Switch>

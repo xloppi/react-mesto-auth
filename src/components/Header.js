@@ -8,13 +8,13 @@ function Header({ onLogout, userEmail }) {
         <nav className="header__navigation">
           <div className="header__navigation-container">
             <Switch>
-              <Route path="/register">
-                <Link className="header__link" to='/login'>
+              <Route path="/sign-up">
+                <Link className="header__link" to='/sign-in'>
                   Войти
                 </Link>
               </Route>
-              <Route path="/login">
-                <Link className="header__link" to='/register'>
+              <Route path="/sign-in">
+                <Link className="header__link" to='/sign-up'>
                   Регистрация
                 </Link>
               </Route>

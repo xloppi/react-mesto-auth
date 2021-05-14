@@ -10,11 +10,11 @@ import InfoTooltip from './InfoTooltip';
 import api from '../utils/api';
 import Login from './Login';
 import Register from './Register';
-import auth from '../utils/auth';
+import * as auth from '../utils/auth';
 import ProtectedRoute from './ProtectedRoute';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { useEffect, useState } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 
 function App() {
 
@@ -28,6 +28,18 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [successfulRequest, setSuccessfulRequest] = useState(false);
   const [messageTooltip, setMessageTooltip] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const history = useHistory();
+
+  useEffect(() => {
+    tokenCheck();
+  }, [])
+
+  useEffect(() => {
+    if(loggedIn) {
+      history.push('/');
+    }
+  }, [loggedIn])
 
   useEffect(() => {
     api.getUserInfo()
@@ -48,6 +60,18 @@ function App() {
       console.log('Ошибка: ', err);
     });
   }, [])
+
+  const tokenCheck = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return
+    }
+    auth.getContent(token)
+      .then((res) => {
+        setUserEmail(res.data.email);
+        setLoggedIn(true);
+      })
+  }
 
   const handleCardLike = (card) => {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
@@ -126,11 +150,12 @@ function App() {
     });
   }
 
-  const register = (data) => {
+  const handleRegister = (data) => {
     return auth.register(data)
       .then(() => {
         setSuccessfulRequest(true);
         setTooltipOpen(true);
+        history.push('/login');
       })
       .catch(() => {
         setSuccessfulRequest(false);
@@ -138,11 +163,32 @@ function App() {
       })
   }
 
+  const handleLogin = (data) => {
+    return auth.authorize(data)
+      .then(({token}) =>{
+        localStorage.setItem('token', token);
+        setLoggedIn(true);
+        setSuccessfulRequest(true);
+        setTooltipOpen(true);
+        setUserEmail(data.email);
+      })
+      .catch(() => {
+        setSuccessfulRequest(false);
+        setTooltipOpen(true);
+      })
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setLoggedIn(false);
+    history.push('/login');
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <div className="page__content">
-          <Header />
+          <Header userEmail={userEmail} onLogout={handleLogout}/>
           <Switch>
             <ProtectedRoute
             exact path="/"
@@ -157,12 +203,10 @@ function App() {
             onCardDelete={handleCardDelete}
             />
             <Route path="/login">
-              <Login />
+              <Login onLogin={handleLogin} />
             </Route>
             <Route path="/register">
-              <Register onRegister={(data) =>{
-                console.log(data)
-              }} />
+              <Register onRegister={handleRegister} />
             </Route>
             <Route>
             {loggedIn ? (

@@ -17,7 +17,7 @@ function Register ({ onRegister }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onRegister(registerData)
+    onRegister(registerData);
   }
 
   return (

@@ -142,7 +142,9 @@ function App() {
               <Login />
             </Route>
             <Route path="/register">
-              <Register />
+              <Register onRegister={(data) =>{
+                console.log(data)
+              }} />
             </Route>
             <Route>
             {loggedIn ? (
